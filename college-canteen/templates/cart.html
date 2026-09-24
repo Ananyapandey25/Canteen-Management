@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Cart - College Canteen{% endblock %}
+{% block content %}
+<h1>Your Cart</h1>
+
+{% if cart_items %}
+<div class="table-wrap"><table class="data-table">
+    <thead>
+        <tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>₹{{ item.price }}</td>
+            <td>
+                <form action="{{ url_for('update_cart', item_id=item.id) }}" method="POST" class="qty-form">
+                    <button type="submit" name="action" value="decrease" class="btn-small">−</button>
+                    <span class="qty-value">{{ item.qty }}</span>
+                    <button type="submit" name="action" value="increase" class="btn-small">+</button>
+                </form>
+            </td>
+            <td>₹{{ item.subtotal }}</td>
+            <td>
+                <form action="{{ url_for('remove_from_cart', item_id=item.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger btn-small">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table></div>
+
+<div class="cart-summary">
+    <h2>Total: ₹{{ total }}</h2>
+    <form action="{{ url_for('place_order') }}" method="POST" class="order-form">
+        <input type="text" name="student_name" placeholder="Enter your name" required>
+        <button type="submit" class="btn btn-primary">Place Order</button>
+    </form>
+</div>
+
+{% else %}
+<p class="empty-state">Your cart is empty. <a href="{{ url_for('menu') }}">Browse the menu</a> to add items.</p>
+{% endif %}
+{% endblock %}
